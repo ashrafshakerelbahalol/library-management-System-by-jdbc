@@ -11,11 +11,12 @@ import com.libraryjdbc.management.TransactionMangement;
 import com.libraryjdbc.management.UserMangement;
 
 public class Main {
-    static Connection connection = null;
+    public static  Connection connection = null;
 
     public static void makeConnection() throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.cj.jdbc.Driver");
-        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/allosmr", "root", "1234");
+        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/library", "root", "1234");
+        System.out.println("make a connection");
     }
 
     public static void closeConnection(Connection connection) {
@@ -32,20 +33,20 @@ public class Main {
 
         Scanner sc = new Scanner(System.in);
         int choice = commands(sc);
-     //  if (connection == null)
-     //      makeConnection();
+       if (connection == null)
+          makeConnection();
         switch (choice) {
             case 1:
-                 new BookMangement(sc);
-               // commands(sc);
+                 new BookMangement(sc,connection);
+               
                 break;
             case 2:
                  new UserMangement(sc);
-               // commands(sc);
+               
                 break;
             case 3:
                  new TransactionMangement(sc);
-               // commands(sc);
+              
                 break;
             default:
                 System.out.println("something got wrong");

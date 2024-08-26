@@ -1,19 +1,19 @@
 package com.libraryjdbc.entity;
 
 public class user {
-    private int user_id;
+    private int userId;
     private String name;
     private String address;
     private String email;
     private String phone;
-  private String user_type;
+    private String userType;
 
     public int getUser_id() {
-        return user_id;
+        return userId;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+    public void setUser_id(int userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -49,19 +49,19 @@ public class user {
     }
 
     public String getUser_type() {
-        return user_type;
+        return userType;
     }
 
     public void setUser_type(String user_type) {
-        this.user_type = user_type;
+        this.userType = user_type;
     }
 
-    public user(String name, String address, String email, String phone, String user_type) {
+    public user(String name, String address, String email, String phone, String userType) {
         this.name = name;
         this.address = address;
         this.email = email;
         this.phone = phone;
-        this.user_type = user_type;
+        this.userType = userType;
     }
 
 }

@@ -5,10 +5,22 @@ public class Book {
      private String  title;
      private String  author;
      private String  publisher;
-     private String  year_of_publication;
+     private String  yearOfPublication;
      private String  genre;
      private int  quantity;
-     public int getBookId() {
+  
+    @Override
+    public String toString() {
+        return "Book [bookId=" + bookId + ", title=" + title + ", author=" + author + ", publisher=" + publisher
+                + ", yearOfPublication=" + yearOfPublication + ", genre=" + genre + ", quantity=" + quantity + "]";
+    }
+    public String getYearOfPublication() {
+        return yearOfPublication;
+    }
+    public void setYearOfPublication(String yearOfPublication) {
+        this.yearOfPublication = yearOfPublication;
+    } 
+      public int getBookId() {
         return bookId;
     }
     public void setBookId(int bookId) {
@@ -32,12 +44,7 @@ public class Book {
     public void setPublisher(String publisher) {
         this.publisher = publisher;
     }
-    public String getYear_of_publication() {
-        return year_of_publication;
-    }
-    public void setYear_of_publication(String year_of_publication) {
-        this.year_of_publication = year_of_publication;
-    }
+    
     public String getGenre() {
         return genre;
     }
@@ -50,13 +57,16 @@ public class Book {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
-    public Book(String title, String author, String publisher, String year_of_publication, String genre, int quantity) {
+    public Book(String title, String author, String publisher, String yearOfPublication, String genre, int quantity) {
         this.title = title;
         this.author = author;
         this.publisher = publisher;
-        this.year_of_publication = year_of_publication;
+        this.yearOfPublication = yearOfPublication;
         this.genre = genre;
         this.quantity = quantity;
+    }
+    public Book(){
+
     }
  
     

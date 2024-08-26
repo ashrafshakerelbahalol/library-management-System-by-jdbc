@@ -1,0 +1,32 @@
+create table book(
+    book_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    author VARCHAR(100) NOT NULL,
+    publisher VARCHAR(100) NOT NULL ,
+    genre VARCHAR(100),
+    year_of_publication VARCHAR(100),
+    quantity INT
+);
+CREATE TABLE Books (
+    BookID INT AUTO_INCREMENT PRIMARY KEY,
+    Title VARCHAR(100) NOT NULL,
+    Author VARCHAR(100) NOT NULL,
+    Publisher VARCHAR(100),
+    Year INT,
+    ISBN VARCHAR(20)
+);
+CREATE TABLE user(
+    user_id  INT AUTO_INCREMENT PRIMARY KEY,
+    name  VARCHAR(100) NOT NULL,
+    address      VARCHAR(100) NOT NULL,
+    email     VARCHAR(100) ,
+    phone   VARCHAR(100) NOT NULL,
+    user_type  VARCHAR(100) NOT NULL
+);
+java
+    private int user_id;
+    private String name;
+    private String address;
+    private String email;
+    private String phone;
+  private String user_type;
