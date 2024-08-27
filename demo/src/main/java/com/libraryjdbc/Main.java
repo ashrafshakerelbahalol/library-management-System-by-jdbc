@@ -41,11 +41,11 @@ public class Main {
                
                 break;
             case 2:
-                 new UserMangement(sc);
+                 new UserMangement(sc,connection);
                
                 break;
             case 3:
-                 new TransactionMangement(sc);
+                 new TransactionMangement(sc,connection);
               
                 break;
             default:

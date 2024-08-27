@@ -4,67 +4,54 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class transaction {
-    private int transaction_id;
-    private int book_id;
-    private int user_id;
-    private LocalDate issue_date;
-    private LocalDate return_date;
-    private double fine_amount;
-
-    public int getTransaction_id() {
-        return transaction_id;
+    private int transactionId;
+    private int bookId;
+    private int userId;
+    private LocalDate issueDate;
+    private LocalDate returnDate;
+    private double fineAmount;
+    public int getTransactionId() {
+        return transactionId;
+    }
+    public void setTransactionId(int transactionId) {
+        this.transactionId = transactionId;
+    }
+    public int getBookId() {
+        return bookId;
+    }
+    public void setBookId(int bookId) {
+        this.bookId = bookId;
+    }
+    public int getUserId() {
+        return userId;
+    }
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+    public LocalDate getIssueDate() {
+        return issueDate;
+    }
+    public void setIssueDate(LocalDate issueDate) {
+        this.issueDate = issueDate;
+    }
+    public LocalDate getReturnDate() {
+        return returnDate;
+    }
+    public void setReturnDate(LocalDate returnDate) {
+        this.returnDate = returnDate;
+    }
+    public double getFineAmount() {
+        return fineAmount;
+    }
+    public void setFineAmount(double fineAmount) {
+        this.fineAmount = fineAmount;
+    }
+    @Override
+    public String toString() {
+        return "transaction [transactionId=" + transactionId + ", bookId=" + bookId + ", userId=" + userId
+                + ", issueDate=" + issueDate + ", returnDate=" + returnDate + ", fineAmount=" + fineAmount + "]";
     }
 
-    public void setTransaction_id(int transaction_id) {
-        this.transaction_id = transaction_id;
-    }
-
-    public int getBook_id() {
-        return book_id;
-    }
-
-    public void setBook_id(int book_id) {
-        this.book_id = book_id;
-    }
-
-    public int getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
-    }
-
-    public LocalDate getIssue_date() {
-        return issue_date;
-    }
-
-    public void setIssue_date(LocalDate issue_date) {
-        this.issue_date = issue_date;
-    }
-
-    public LocalDate getReturn_date() {
-        return return_date;
-    }
-
-    public void setReturn_date(LocalDate return_date) {
-        this.return_date = return_date;
-    }
-
-    public double getFine_amount() {
-        return fine_amount;
-    }
-
-    public void setFine_amount(double fine_amount) {
-        this.fine_amount = fine_amount;
-    }
-
-    public transaction(int book_id, int user_id, LocalDate issue_date, LocalDate return_date, double fine_amount) {
-        this.book_id = book_id;
-        this.user_id = user_id;
-        this.issue_date = issue_date;
-        this.return_date = return_date;
-        this.fine_amount = fine_amount;
-    }
+  
 
 }

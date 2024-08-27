@@ -1,6 +1,6 @@
 package com.libraryjdbc.entity;
 
-public class user {
+public class User {
     private int userId;
     private String name;
     private String address;
@@ -8,11 +8,11 @@ public class user {
     private String phone;
     private String userType;
 
-    public int getUser_id() {
+    public int getUserId() {
         return userId;
     }
 
-    public void setUser_id(int userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
@@ -48,20 +48,27 @@ public class user {
         this.phone = phone;
     }
 
-    public String getUser_type() {
+    public String getUserType() {
         return userType;
     }
 
-    public void setUser_type(String user_type) {
-        this.userType = user_type;
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 
-    public user(String name, String address, String email, String phone, String userType) {
+    public User(String name, String address, String email, String phone, String userType) {
         this.name = name;
         this.address = address;
         this.email = email;
         this.phone = phone;
         this.userType = userType;
+    }
+    public User(){}
+
+    @Override
+    public String toString() {
+        return "User [userId=" + userId + ", name=" + name + ", address=" + address + ", email=" + email + ", phone="
+                + phone + ", userType=" + userType + "]";
     }
 
 }
