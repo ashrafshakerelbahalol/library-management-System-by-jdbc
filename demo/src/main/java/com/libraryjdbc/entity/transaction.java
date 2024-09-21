@@ -3,7 +3,7 @@ package com.libraryjdbc.entity;
 import java.time.LocalDate;
 import java.util.*;
 
-public class transaction {
+public class Transaction {
     private int transactionId;
     private int bookId;
     private int userId;

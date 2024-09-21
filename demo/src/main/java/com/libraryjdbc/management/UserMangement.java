@@ -12,27 +12,31 @@ import com.libraryjdbc.entity.User;
 
 public class UserMangement {
 
-   public UserMangement(Scanner sc, Connection connection) throws ClassNotFoundException, SQLException {
-        int choice = userCommands(sc);
-        switch (choice) {
-            case 1:
-               // addUser(sc, connection);
-                Main.main(new String[1]);
-                break;
-            case 2:
-                removeUser(sc, connection);
-                Main.main(new String[1]);
-                break;
-            case 3:
-                searchForUsers(sc, connection);
-                Main.main(new String[1]);
-                break;
-            case 4:
-                viewAllUsers(sc, connection);
-                Main.main(new String[1]);
-                break;
-            default:
-                System.out.println("something got wrong");
+    public UserMangement(Scanner sc, Connection connection) {
+        try {
+            int choice = userCommands(sc);
+            switch (choice) {
+                case 1:
+                    addUser(sc, connection);
+                    Main.main(new String[1]);
+                    break;
+                case 2:
+                    removeUser(sc, connection);
+                    Main.main(new String[1]);
+                    break;
+                case 3:
+                    searchForUsers(sc, connection);
+                    Main.main(new String[1]);
+                    break;
+                case 4:
+                    viewAllUsers(sc, connection);
+                    Main.main(new String[1]);
+                    break;
+                default:
+                    System.out.println("something got wrong");
+            }
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
         }
     }
 
@@ -115,19 +119,20 @@ public class UserMangement {
         user.setAddress(sc.nextLine());
         System.out.println("Enter the user's Email");
         user.setEmail(sc.nextLine());
-        sc.nextLine(); // Consume the leftover newline
+     
         System.out.println("Enter user's Phone:");
         user.setPhone(sc.nextLine());
-        String sql = "insert into user(name,address,email,phone,genre,year_of_publication)VALUES(?,?,?,?,?,?)";
+        System.out.println("Enter user's type:");
+        user.setUserType(sc.nextLine());
+        String sql = "insert into user(name,address,email,phone,user_type)VALUES(?,?,?,?,?)";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, user.getName());
             statement.setString(2, user.getAddress());
             statement.setString(3, user.getEmail());
             statement.setString(4, user.getPhone());
-            //statement.setString(5, user.getGenre());
-            //statement.setString(6, user.getYearOfPublication());
-            System.out.println(user);
+            statement.setString(5, user.getUserType());
+           
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
                 System.out.println("A new user was inserted successfully!");
@@ -157,5 +162,5 @@ public class UserMangement {
         }
         return choice;
     }
-    
+
 }
