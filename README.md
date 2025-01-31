@@ -1,7 +1,3 @@
-Here’s an improved version of your README file:
-
----
-
 # Library Management System (Java JDBC-based)
 
 This is a command-line application designed to efficiently manage a library's operations using Java and JDBC. The system highlights strong proficiency in database connectivity, SQL queries, and core Java concepts, making it a practical solution for database-driven applications.
