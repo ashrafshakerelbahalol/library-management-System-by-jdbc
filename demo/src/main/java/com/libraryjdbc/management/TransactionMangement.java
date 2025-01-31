@@ -70,6 +70,7 @@ public class TransactionMangement implements Imanagement {
             System.out.println("2. return a book");
             System.out.println("3. show all transactions ");
             System.out.println("4. return");
+            System.out.print("Enter your choice: ");
             choice = sc.nextInt();
         } while (choice < 0 || choice > 4);
         if (choice == 4) {
@@ -167,21 +168,21 @@ public class TransactionMangement implements Imanagement {
             Date currentDate = new Date();
             java.sql.Date sqlDate = new java.sql.Date(currentDate.getTime());
             statement.setDate(1, sqlDate);
-            statement.setInt(2, transaction.getBookId());
-            statement.setInt(3, transaction.getUserId());
+            statement.setInt(3, transaction.getBookId());
+            statement.setInt(2, transaction.getUserId());
             statement.setInt(4, transaction.getTransactionId());
             statement.execute();
-            System.out.println(" the book has been returned");
+            System.out.println("The book has been returned");
             statement = connection
-                    .prepareStatement("SELECT return_date ,issue_date FROM transaction WHERE transaction_id=?");
+                    .prepareStatement("SELECT DATEDIFF(return_date, issue_date) AS date_difference FROM transaction WHERE transaction_id=?");
             statement.setInt(1, transaction.getTransactionId());
             ResultSet result = statement.executeQuery();
             result.next();
             int differnceOfDate = result.getInt(1);
-            statement = connection.prepareStatement("UPDATE transaction set fine_amount=? where  transaction_id=?");
+            statement = connection.prepareStatement("UPDATE transaction set fine_amount=? WHERE  transaction_id=?");
             if (differnceOfDate < 7)
                
-                System.out.println("there is no fine");
+                System.out.println("There is no fine");
             else {
                 
                 transaction.setFineAmount(differnceOfDate * 5);
@@ -193,10 +194,11 @@ public class TransactionMangement implements Imanagement {
 
             
             connection.commit();
-           System.out.println("return of book is done");
+           System.out.println("The return of book is done");
             connection.setAutoCommit(true);
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
+            e.printStackTrace();
         }
     }
     private void showAllTransactions(Scanner sc2, Connection connection2) {
