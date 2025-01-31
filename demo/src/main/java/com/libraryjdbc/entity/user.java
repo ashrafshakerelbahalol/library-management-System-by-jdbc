@@ -6,7 +6,7 @@ public class User {
     private String address;
     private String email;
     private String phone;
-    private String userType;
+   
 
     public int getUserId() {
         return userId;
@@ -48,27 +48,21 @@ public class User {
         this.phone = phone;
     }
 
-    public String getUserType() {
-        return userType;
-    }
+  
 
-    public void setUserType(String userType) {
-        this.userType = userType;
-    }
-
-    public User(String name, String address, String email, String phone, String userType) {
+    public User(String name, String address, String email, String phone) {
         this.name = name;
         this.address = address;
         this.email = email;
         this.phone = phone;
-        this.userType = userType;
+      
     }
     public User(){}
 
     @Override
     public String toString() {
         return "User [userId=" + userId + ", name=" + name + ", address=" + address + ", email=" + email + ", phone="
-                + phone + ", userType=" + userType + "]";
+                + phone + "]";
     }
 
 }

@@ -10,9 +10,10 @@ import com.libraryjdbc.management.TransactionMangement;
 import com.libraryjdbc.management.UserMangement;
 
 public class Main {
-    private static Connection connection = null;
+   
 
-    public static Connection makeConnection(Connection connection) {
+    public static Connection makeConnection() {
+        Connection connection = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/library", "root", "1234");
@@ -37,22 +38,22 @@ public class Main {
 
     public static void main(String[] args) {
         try {
+            Connection connection = null;               
             Scanner sc = new Scanner(System.in);
             int choice = commands(sc);
-            if (connection == null)
-                connection=makeConnection(connection);
-                
+            if (connection == null){
+                connection=makeConnection();
+                }
+                System.out.println(connection);
             switch (choice) {
                 case 1:
-                    new BookMangement(sc, connection);
-
+                     BookMangement.createManagement(sc, connection).startManagement();
                     break;
                 case 2:
-                    new UserMangement(sc, connection);
-
+                     UserMangement.createManagement(sc,connection).startManagement();
                     break;
                 case 3:
-                    new TransactionMangement(sc, connection);
+                TransactionMangement.createManagement(sc,connection).startManagement();
 
                     break;
                 default:
@@ -77,7 +78,7 @@ public class Main {
             choice = sc.nextInt();
         } while (choice < 0 || choice > 4);
         if (choice == 4) {    
-            closeConnection(connection);
+            
             System.exit(0);
      
         }

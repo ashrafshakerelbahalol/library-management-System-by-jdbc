@@ -1,11 +1,13 @@
 package com.libraryjdbc.entity;
 
+import java.time.Year;
+
 public class Book {
      private int bookId ;
      private String  title;
      private String  author;
      private String  publisher;
-     private String  yearOfPublication;
+     private int  yearOfPublication;
      private String  genre;
      private int  quantity;
   
@@ -14,10 +16,10 @@ public class Book {
         return "Book [bookId=" + bookId + ", title=" + title + ", author=" + author + ", publisher=" + publisher
                 + ", yearOfPublication=" + yearOfPublication + ", genre=" + genre + ", quantity=" + quantity + "]";
     }
-    public String getYearOfPublication() {
+    public int getYearOfPublication() {
         return yearOfPublication;
     }
-    public void setYearOfPublication(String yearOfPublication) {
+    public void setYearOfPublication(int yearOfPublication) {
         this.yearOfPublication = yearOfPublication;
     } 
       public int getBookId() {
@@ -57,7 +59,7 @@ public class Book {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
-    public Book(String title, String author, String publisher, String yearOfPublication, String genre, int quantity) {
+    public Book(String title, String author, String publisher, int yearOfPublication, String genre, int quantity) {
         this.title = title;
         this.author = author;
         this.publisher = publisher;

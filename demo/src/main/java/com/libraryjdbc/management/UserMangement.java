@@ -9,10 +9,23 @@ import java.util.Scanner;
 
 import com.libraryjdbc.Main;
 import com.libraryjdbc.entity.User;
+import com.libraryjdbc.printer.IPrinter;
+import com.libraryjdbc.printer.UserPrinter;
 
-public class UserMangement {
+public class UserMangement implements Imanagement {
+    private static UserMangement userMangement;
+    private Scanner sc;
+    private Connection connection;
+    private IPrinter Printer;
 
-    public UserMangement(Scanner sc, Connection connection) {
+    public static UserMangement createManagement(Scanner sc, Connection connection) {
+        if(userMangement!=null)
+          return userMangement;
+          else
+            return userMangement = new UserMangement(sc, connection);
+    }
+    @Override
+    public void startManagement() throws ClassNotFoundException, SQLException {
         try {
             int choice = userCommands(sc);
             switch (choice) {
@@ -40,48 +53,39 @@ public class UserMangement {
         }
     }
 
+
+    private UserMangement(Scanner sc, Connection connection) {
+         this.sc = sc;
+        this.connection = connection;
+        this.Printer= new UserPrinter();
+    }
+
     private void viewAllUsers(Scanner sc, Connection connection) {
         String sql = "select * from user ; ";
-        User user = new User();
         try {
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(sql);
-            while (rs.next()) {
-                user.setUserId(rs.getInt(1));
-                user.setName(rs.getString(2));
-                user.setAddress(rs.getString(3));
-                user.setEmail(rs.getString(4));
-                user.setPhone(rs.getString(5));
-                user.setUserType(rs.getString(6));
-                System.out.println(user.toString());
-            }
+            Printer.excute(rs);
+
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
     }
 
     private void searchForUsers(Scanner sc, Connection connection) {
-        String sql = "select * from user where user_id=?";
+        String sql = "select * from user where name=?";
         User user = new User();
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            System.out.println("Enter the user id:");
+            System.out.println("Enter the user's name:");
             sc.nextLine();
-            user.setUserId(sc.nextInt());
-            statement.setInt(1, user.getUserId());
+            user.setName(sc.nextLine());
+            statement.setString(1, user.getName());
             ResultSet rs = statement.executeQuery();
             if (rs == null)
                 System.out.println("user not found");
             else {
-                while (rs.next()) {
-                    user.setUserId(rs.getInt(1));
-                    user.setName(rs.getString(2));
-                    user.setAddress(rs.getString(3));
-                    user.setEmail(rs.getString(4));
-                    user.setPhone(rs.getString(5));
-                    user.setUserType(rs.getString(6));
-                    System.out.println(user.toString());
-                }
+               Printer.excute(rs);
             }
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
@@ -122,16 +126,15 @@ public class UserMangement {
      
         System.out.println("Enter user's Phone:");
         user.setPhone(sc.nextLine());
-        System.out.println("Enter user's type:");
-        user.setUserType(sc.nextLine());
-        String sql = "insert into user(name,address,email,phone,user_type)VALUES(?,?,?,?,?)";
+        
+        String sql = "insert into user(name,address,email,phone)VALUES(?,?,?,?)";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, user.getName());
             statement.setString(2, user.getAddress());
             statement.setString(3, user.getEmail());
             statement.setString(4, user.getPhone());
-            statement.setString(5, user.getUserType());
+            
            
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
@@ -162,5 +165,7 @@ public class UserMangement {
         }
         return choice;
     }
+
+  
 
 }

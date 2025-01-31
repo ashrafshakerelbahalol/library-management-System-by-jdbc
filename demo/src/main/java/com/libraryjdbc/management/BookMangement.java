@@ -8,56 +8,72 @@ import java.sql.Statement;
 import java.util.Scanner;
 import com.libraryjdbc.Main;
 import com.libraryjdbc.entity.Book;
+import com.libraryjdbc.printer.BookPrinter;
+import com.libraryjdbc.printer.IPrinter;
 
-public class BookMangement {
+public class BookMangement implements Imanagement {
+    private static BookMangement bookMangement;
+    private Scanner sc;
+    private Connection connection;
+    private IPrinter printer;
 
-    public BookMangement(Scanner sc, Connection connection) throws ClassNotFoundException, SQLException {
-        int choice = bookCommands(sc);
-        switch (choice) {
-            case 1:
-                addBook(sc, connection);
-                Main.main(new String[1]);
-                break;
-            case 2:
-                removeBook(sc, connection);
-                Main.main(new String[1]);
-                break;
-            case 3:
-                searchForBooks(sc, connection);
-                Main.main(new String[1]);
-                break;
-            case 4:
-                viewAllBooks(sc, connection);
-                Main.main(new String[1]);
-                break;
-            default:
-                System.out.println("something got wrong");
-        }
+    public static BookMangement createManagement(Scanner sc, Connection connection) {
+        if (bookMangement != null)
+            return bookMangement;
+        else
+            return bookMangement = new BookMangement(sc, connection);
     }
 
-    private void viewAllBooks(Scanner sc, Connection connection) {
-        String sql = "select * from book ; ";
-        Book book = new Book();
+    private BookMangement(Scanner sc, Connection connection) {
+        this.sc = sc;
+        this.connection = connection;
+        this.printer = new BookPrinter();
+
+    }
+
+    @Override
+    public void startManagement() {
+        try {
+            int choice = bookCommands();
+            switch (choice) {
+                case 1:
+                    addBook();
+                    Main.main(new String[1]);
+                    break;
+                case 2:
+                    removeBook();
+                    Main.main(new String[1]);
+                    break;
+                case 3:
+                    searchForBooks();
+                    Main.main(new String[1]);
+                    break;
+                case 4:
+                    viewAllBooks();
+                    Main.main(new String[1]);
+                    break;
+                default:
+                    System.out.println("something got wrong");
+            }
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
+    }
+
+    private void viewAllBooks() {
+        String sql = "select book_id,title,author,publisher,quantity,genre,year_of_publication from book ; ";
         try {
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(sql);
-            while (rs.next()) {
-                book.setBookId(rs.getInt(1));
-                book.setTitle(rs.getString(2));
-                book.setAuthor(rs.getString(3));
-                book.setPublisher(rs.getString(4));
-                book.setGenre(rs.getString(5));
-                book.setYearOfPublication(rs.getString(6));
-                book.setQuantity(rs.getInt(7));
-                System.out.println(book.toString());
-            }
+            printer.excute(rs);
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
     }
 
-    private void searchForBooks(Scanner sc, Connection connection) {
-        String sql = "select * from book where title=?";
+    private void searchForBooks() {
+        String sql = "select book_id,title,author,publisher,quantity,genre,year_of_publication from book where title=?";
         Book book = new Book();
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -69,15 +85,8 @@ public class BookMangement {
             if (rs == null)
                 System.out.println("book not found");
             else {
-                while (rs.next()) {
-                    book.setBookId(rs.getInt(1));
-                    book.setAuthor(rs.getString(3));
-                    book.setPublisher(rs.getString(4));
-                    book.setGenre(rs.getString(5));
-                    book.setYearOfPublication(rs.getString(6));
-                    book.setQuantity(rs.getInt(7));
-                    System.out.print(book.toString());
-                }
+
+                printer.excute(rs);
             }
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
@@ -85,7 +94,7 @@ public class BookMangement {
 
     }
 
-    private void removeBook(Scanner sc, Connection connection) {
+    private void removeBook() {
         String sql = "delete from book where title=?";
         Book book = new Book();
         try {
@@ -106,7 +115,7 @@ public class BookMangement {
 
     }
 
-    public void addBook(Scanner sc, Connection connection) {
+    public void addBook() {
         Book book = new Book();
         sc.nextLine(); // Consume the leftover newline
         System.out.println("Enter the book name:");
@@ -121,7 +130,7 @@ public class BookMangement {
         System.out.println("Enter book genre:");
         book.setGenre(sc.nextLine());
         System.out.println("Enter year of publication:");
-        book.setYearOfPublication(sc.nextLine());
+        book.setYearOfPublication(sc.nextInt());
         String sql = "insert into book(title,author,publisher,quantity,genre,year_of_publication)VALUES(?,?,?,?,?,?)";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -130,7 +139,7 @@ public class BookMangement {
             statement.setString(3, book.getPublisher());
             statement.setInt(4, book.getQuantity());
             statement.setString(5, book.getGenre());
-            statement.setString(6, book.getYearOfPublication());
+            statement.setInt(6, book.getYearOfPublication());
             System.out.println(book);
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
@@ -144,10 +153,10 @@ public class BookMangement {
 
     }
 
-    public int bookCommands(Scanner sc) throws ClassNotFoundException, SQLException {
+    public int bookCommands() throws ClassNotFoundException, SQLException {
         int choice;
         do {
-            System.out.println("\n=== book Management System ===");
+            System.out.println("\n=== Book Management System ===");
             System.out.println("1. Add a book ");
             System.out.println("2. Remove a book");
             System.out.println("3. search for a book");
@@ -161,4 +170,5 @@ public class BookMangement {
         }
         return choice;
     }
+
 }

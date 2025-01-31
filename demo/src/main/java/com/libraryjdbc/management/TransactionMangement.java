@@ -1,19 +1,32 @@
 package com.libraryjdbc.management;
 
-import java.beans.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Date;
 import java.util.Scanner;
 import com.libraryjdbc.Main;
 import com.libraryjdbc.entity.Transaction;
+import com.libraryjdbc.printer.IPrinter;
+import com.libraryjdbc.printer.TransactionPrinter;
 
-public class TransactionMangement {
+public class TransactionMangement implements Imanagement {
+    private static TransactionMangement transactionMangement;
+    private Scanner sc;
+    private Connection connection;
+    private IPrinter printer;
 
-    public TransactionMangement(Scanner sc, Connection connection) {
+    public static TransactionMangement createManagement(Scanner sc, Connection connection) {
+        if (transactionMangement != null)
+            return transactionMangement;
+        else
+            return transactionMangement = new TransactionMangement(sc, connection);
+    }
 
+    @Override
+    public void startManagement() throws ClassNotFoundException, SQLException {
         try {
             int choice = transactionsCommands(sc);
             switch (choice) {
@@ -25,7 +38,13 @@ public class TransactionMangement {
                     retunABook(sc, connection);
                     Main.main(new String[1]);
                     break;
+                case 3:
+                    showAllTransactions(sc, connection);
+                    Main.main(new String[1]);
+                    break;
+
                 default:
+
                     System.out.println("something got wrong");
             }
         } catch (Exception e) {
@@ -33,16 +52,27 @@ public class TransactionMangement {
         }
     }
 
+    
+
+    private TransactionMangement(Scanner sc, Connection connection) {
+        this.sc = sc;
+        this.connection = connection;
+        this.printer = new TransactionPrinter();
+
+    }
+
     public int transactionsCommands(Scanner sc) throws ClassNotFoundException, SQLException {
         int choice;
         do {
-            System.out.println("\n=== user Management System ===");
+            System.out.println("\n=== Transaction Management System ===");
+
             System.out.println("1. borrow book ");
             System.out.println("2. return a book");
-            System.out.println("3. return");
+            System.out.println("3. show all transactions ");
+            System.out.println("4. return");
             choice = sc.nextInt();
-        } while (choice < 0 || choice > 3);
-        if (choice == 3) {
+        } while (choice < 0 || choice > 4);
+        if (choice == 4) {
             Main.main(new String[1]);
         }
         return choice;
@@ -63,24 +93,24 @@ public class TransactionMangement {
             transaction.setBookId(sc.nextInt());
             statement.setInt(1, transaction.getBookId());
             boolean isBookFound = statement.execute();
-     
+
             ResultSet result = statement.executeQuery();
             result.next();
             int bookNumber = result.getInt("quantity");
-            if (!isBookFound ) {
+            if (!isBookFound) {
                 System.out.println("there is  no book with this id");
                 connection.setAutoCommit(true);
                 Main.main(new String[1]);
-            }else if (!isUserFound ) {
+            } else if (!isUserFound) {
                 System.out.println("there is no user with this id");
                 connection.setAutoCommit(true);
                 Main.main(new String[1]);
-             }else if( bookNumber <= 0){
+            } else if (bookNumber <= 0) {
                 System.out.println("there is no copy of this book");
                 connection.setAutoCommit(true);
                 Main.main(new String[1]);
-             }
-            statement = connection.prepareStatement("Update book set quantity=quantity-1 where book_id=?;");
+            }
+            statement = connection.prepareStatement("UPDATE book set quantity=quantity-1 where book_id=?;");
             statement.setInt(1, transaction.getBookId());
             statement.execute();
             statement = connection.prepareStatement("INSERT INTO transaction (book_id, user_id " +
@@ -94,7 +124,7 @@ public class TransactionMangement {
             statement.execute();
             connection.commit();
             System.out.println(" the transaction has been created");
-      
+
             connection.setAutoCommit(true);
         } catch (Exception e) {
             System.out.println("something got wrong");
@@ -128,12 +158,12 @@ public class TransactionMangement {
                 connection.setAutoCommit(true);
                 Main.main(new String[1]);
             }
-            statement = connection.prepareStatement("Update book set quantity=quantity+1 where book_id=?;");
+            statement = connection.prepareStatement("UPDATE book set quantity=quantity+1 where book_id=?;");
             statement.setInt(1, transaction.getBookId());
             statement.execute();
 
             statement = connection.prepareStatement(
-                    "update transaction set return_date=? where user_id=? And book_id=? And transaction_id=?");
+                    "UPDATE transaction set return_date=? where user_id=? And book_id=? And transaction_id=?");
             Date currentDate = new Date();
             java.sql.Date sqlDate = new java.sql.Date(currentDate.getTime());
             statement.setDate(1, sqlDate);
@@ -143,25 +173,38 @@ public class TransactionMangement {
             statement.execute();
             System.out.println(" the book has been returned");
             statement = connection
-                    .prepareStatement("SELECT return_date -issue_date FROM transaction WHERE transaction_id=?");
+                    .prepareStatement("SELECT return_date ,issue_date FROM transaction WHERE transaction_id=?");
             statement.setInt(1, transaction.getTransactionId());
             ResultSet result = statement.executeQuery();
             result.next();
             int differnceOfDate = result.getInt(1);
-
+            statement = connection.prepareStatement("UPDATE transaction set fine_amount=? where  transaction_id=?");
             if (differnceOfDate < 7)
+               
                 System.out.println("there is no fine");
             else {
-                statement = connection.prepareStatement("update transaction set fine_amount=? where  transaction_id=?");
+                
                 transaction.setFineAmount(differnceOfDate * 5);
+            }
                 System.out.println(transaction.getFineAmount());
                 statement.setDouble(1, transaction.getFineAmount());
                 statement.setInt(2, transaction.getTransactionId());
                 statement.execute();
 
-            }
+            
             connection.commit();
+           System.out.println("return of book is done");
             connection.setAutoCommit(true);
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+    private void showAllTransactions(Scanner sc2, Connection connection2) {
+        String sql = "select transaction_id,user_id,book_id,issue_date,return_date,fine_amount from transaction ; ";
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
+            printer.excute(rs);
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }

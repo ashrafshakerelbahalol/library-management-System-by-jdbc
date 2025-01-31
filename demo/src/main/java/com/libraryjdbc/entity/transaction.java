@@ -10,6 +10,7 @@ public class Transaction {
     private LocalDate issueDate;
     private LocalDate returnDate;
     private double fineAmount;
+    
     public int getTransactionId() {
         return transactionId;
     }
